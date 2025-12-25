@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} - 我的博客{% endblock %}
+
+{% block content %}
+<article>
+    <h1 class="mb-4">{{ post.title }}</h1>
+    <div class="post-meta mb-4">
+        <span>作者：{{ post.author.username }}</span>
+        <span class="mx-2">|</span>
+        <span>发布于：{{ post.created|date:"Y-m-d H:i" }}</span>
+        <span class="mx-2">|</span>
+        <span>更新于：{{ post.updated|date:"Y-m-d H:i" }}</span>
+        <span class="mx-2">|</span>
+        <span>分类：{{ post.category.name }}</span>
+        <span class="mx-2">|</span>
+        <span>阅读：{{ post.views }}次</span>
+    </div>
+
+    {% if post.tags.all %}
+    <div class="mb-4">
+        <strong>标签：</strong>
+        {% for tag in post.tags.all %}
+        <span class="badge bg-secondary me-1">{{ tag.name }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="post-content mb-4">
+        {{ post.content|linebreaks }}
+    </div>
+
+    <div class="border-top pt-3">
+        <a href="{% url 'index' %}" class="btn btn-outline-secondary">返回列表</a>
+        {% if user.is_authenticated and user == post.author %}
+        <a href="{% url 'post_update' post.pk %}" class="btn btn-outline-primary">编辑</a>
+        <a href="{% url 'post_delete' post.pk %}" class="btn btn-outline-danger">删除</a>
+        {% endif %}
+    </div>
+</article>
+{% endblock %}

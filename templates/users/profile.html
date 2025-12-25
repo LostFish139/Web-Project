@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}个人资料 - 我的博客{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">个人资料</h4>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 text-center">
+                        <div class="mb-3">
+                            <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center" 
+                                  style="width: 150px; height: 150px; font-size: 3rem;">
+                                <span class="text-white">{{ user.username|first|upper }}</span>
+                            </div>
+                        </div>
+                        <h5>{{ user.username }}</h5>
+                        <p class="text-muted">{{ user.email }}</p>
+                    </div>
+                    <div class="col-md-8">
+                        <h5>账户信息</h5>
+                        <table class="table">
+                            <tr>
+                                <th style="width: 30%">用户名：</th>
+                                <td>{{ user.username }}</td>
+                            </tr>
+                            <tr>
+                                <th>邮箱：</th>
+                                <td>{{ user.email }}</td>
+                            </tr>
+                            <tr>
+                                <th>加入时间：</th>
+                                <td>{{ user.date_joined|date:"Y-m-d H:i" }}</td>
+                            </tr>
+                            <tr>
+                                <th>最后登录：</th>
+                                <td>{{ user.last_login|date:"Y-m-d H:i" }}</td>
+                            </tr>
+                            <tr>
+                                <th>文章数量：</th>
+                                <td>{{ user.post_set.count }} 篇</td>
+                            </tr>
+                        </table>
+
+                        <div class="mt-4">
+                            <a href="{% url 'post_create' %}" class="btn btn-primary">发布文章</a>
+                            <a href="/admin/password_change/" class="btn btn-warning">修改密码</a>
+                            <a href="{% url 'logout' %}" class="btn btn-danger">退出登录</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

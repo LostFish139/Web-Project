@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}我的博客{% endblock %}</title>
+    {% load static %}
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        body {
+            padding-top: 60px !important;
+            font-family: 'Microsoft YaHei', sans-serif !important;
+            background-image: url("{% static 'images/background.jpg' %}") !important;
+            background-size: cover !important;
+            background-position: center center !important;
+            background-repeat: no-repeat !important;
+            background-attachment: fixed !important;
+            min-height: 100vh !important;
+            position: relative !important;
+        }
+
+        body::before {
+            content: '' !important;
+            position: fixed !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            background-color: rgba(255, 255, 255, 0.85) !important;
+            z-index: -1 !important;
+        }
+
+        .container {
+            position: relative !important;
+            z-index: 1 !important;
+        }
+
+        .post-meta {
+            color: #6c757d;
+            font-size: 0.9em;
+        }
+        .post-content {
+            line-height: 1.8;
+        }
+        .post-card {
+            transition: transform 0.3s ease;
+            border: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .messages {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            z-index: 1000;
+            min-width: 300px;
+        }
+        .navbar {
+            z-index: 1030;
+        }
+        .messages {
+            z-index: 1050;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'index' %}">我的博客</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'index' %}">首页</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'post_create' %}">发布文章</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'profile' %}">个人中心</a>
+                    </li>
+                    {% endif %}
+                </ul>
+
+                <div class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{% url 'profile' %}">个人资料</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            {% if user.is_staff %}
+                            <li><a class="dropdown-item" href="/admin/">管理后台</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            {% endif %}
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">退出登录</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">登录</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">注册</a>
+                    </li>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 消息提示 -->
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- 主要内容 -->
+    <div class="container mt-4">
+        <div class="row">
+            <main class="col-md-8">
+                {% block content %}
+                {% endblock %}
+            </main>
+            <aside class="col-md-4">
+                {% block sidebar %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">关于本站</h5>
+                    </div>
+                    <div class="card-body">
+                        <p>欢迎来到LostFish的Web，这里分享技术文章和学习心得。</p>
+                        <p><small class="text-muted">基于 Django 构建</small></p>
+                    </div>
+                </div>
+                {% endblock %}
+            </aside>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">© 2024 我的博客 | Powered by Django</span>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
